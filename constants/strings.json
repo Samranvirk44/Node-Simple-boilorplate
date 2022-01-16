@@ -1,0 +1,35 @@
+{
+    "response": {
+        "success": {
+            "login": "Login successfully",
+            "signup": "Signed up successfully",
+            "otp": "OTP",
+            "user_created": "User Created successfully",
+            "get": "Get successfully",
+            "added": "Added successfully"
+
+
+        },
+        "error": {
+            "email_exist": "Email is already exist",
+            "email_required": "Email is required",
+            "password_required": "Password is required",
+            "type_required": "Type is required",
+            "required_field_missing": "Required fields missing",
+            "invalid_email": "Invalid Email",
+            "invalid_password": "Invalid Password"
+        },
+        "middleware": {
+            "token_missing": "Auth token is missing",
+            "token_invalid": "Auth token is invalid",
+            "url_restricted": "Restricted URL"
+        }
+    },
+    "db": {
+        "success": "Connection has been established successfully.",
+        "error": "Unable to connect to the database:"
+    },
+    "server": {
+        "success": "The server is running at localhost:"
+    }
+}

@@ -1,0 +1,13 @@
+node_modules*
+.env
+*.zip
+*.pem
+images/*
+files/*
+videos/*
+thumbnails/*
+.env
+.vscode/*
+.vscode*
+config/*
+config/config.json
