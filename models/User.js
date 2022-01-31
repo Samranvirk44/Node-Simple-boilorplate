@@ -9,22 +9,6 @@ module.exports = (sequelize, DataTypes) => {
         email: {
             type: DataTypes.STRING(30),
         },
-        phone: {
-            type: DataTypes.STRING(15),
-        },
-        latitude: {
-            type: DataTypes.FLOAT(30),
-        },
-        longitude: {
-            type: DataTypes.FLOAT(30),
-        },
-        address: {
-            type: DataTypes.STRING(100),
-        },
-        active: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },
         password: {
             type: DataTypes.STRING(100),
         }
