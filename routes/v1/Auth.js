@@ -14,5 +14,9 @@ module.exports = (app, libs) => {
         const result = await libs.Auth.loginUser(req);
         return res.status(result.code).json(result);
     });
+    router.post('/insertToUser', async (req, res) => {
+        const result = "ddd"//await libs.Auth.loginUser(req);
+        return res.status(result.code).json(result);
+    });
     return router;
 };

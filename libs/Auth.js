@@ -79,39 +79,17 @@ module.exports = {
   loginUser: async (req) => {
     let transaction
     try {
+    //   const jwtTOken=jwt.sign({
+    //     email:body.email
+    // }, HASH_SALT, {
+    //     expiresIn: '24h'
+    // })
       transaction = await models.sequelize.transaction();
-      const { body } = req;
-      if (!body.password || !body.email) {
-        if (transaction) await transaction.rollback();
-        return {
-          status: false,
-          code: httpStatus.BAD_REQUEST,
-          message: constant.strings.response.error.required_field_missing
-        };
-      }
-      let user = await models.User.byEmail(body.email);
-      if (!user) {
-        if (transaction) await transaction.rollback();
-        return {
-          status: false,
-          code: httpStatus.BAD_REQUEST,
-          message: constant.strings.response.error.invalid_email
-        };
-      }
+      
+      let user = await models.User.byEmail(req.email);
+      
 
-      const passwordCheck = await hashing.decrypt(body.password, user.password);
-
-      if (!passwordCheck) {
-        if (transaction) await transaction.rollback();
-        return {
-          status: false,
-          code: httpStatus.BAD_REQUEST,
-          message: constant.strings.response.error.invalid_password
-        };
-      }
-
-      user = user.toJSON();
-      delete user.password;
+console.log(user)
 
       const token = await JWT.generateToken(user);
       await transaction.commit();
@@ -124,6 +102,48 @@ module.exports = {
 
     } catch (err) {
       if (transaction) await transaction.rollback();
+      console.log(err)
+      return {
+        status: false,
+        code: httpStatus.BAD_REQUEST,
+        message: err.message,
+        error: err.message
+      };
+    }
+  },
+  VerifyUser: async (req,given_token) => {
+    let transaction
+    try {
+    //   const jwtTOken=jwt.sign({
+    //     email:body.email
+    // }, HASH_SALT, {
+    //     expiresIn: '24h'
+    // })
+      transaction = await models.sequelize.transaction();
+      
+      let user = await models.User.byEmail(req.email);
+      console.log("At libs--",given_token.token)
+
+     tokenN = given_token.token.slice(7, given_token.token.length);
+
+console.log("after split--",tokenN)
+const VNtoken = await JWT.verifyToken(tokenN);
+console.log("Verification----nmmm",VNtoken)
+
+// const Vtoken = await JWT.verifyToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhbXJhbkBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2NDM4MTY5MzYsImV4cCI6MTY0MzkwMzMzNn0.ndSca6NDchPh56PwTfNd9TtBmgOHQJZWKnQmxdSGXJ4");
+// console.log("Verification----",Vtoken)
+      const token = await JWT.generateToken(user);
+      await transaction.commit();
+      return {
+        status: true,
+        code: httpStatus.OK,
+        message: constant.strings.response.success.login,
+        token
+      };
+
+    } catch (err) {
+      if (transaction) await transaction.rollback();
+      console.log(err)
       return {
         status: false,
         code: httpStatus.BAD_REQUEST,

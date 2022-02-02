@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const HASH_SALT = '*(USER_SALOON!@#123Anvb';
+const HASH_SALT = 'ABC';
 module.exports = {
     hashing: {
         encrypt: async (text) => new Promise((resolve, reject) => {

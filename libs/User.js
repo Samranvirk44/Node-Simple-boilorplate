@@ -5,26 +5,44 @@ const constant = require('../constants');
 require('dotenv').config();
 
 module.exports = {
-  getAll: async (req) => {
+  getAll: async () => {
     let transaction;
     try {
       transaction = await models.sequelize.transaction();
-      let result= await models.User.getAll(req)
+      let result= await models.User.findAll()
+      console.log(result)
       await transaction.commit();
-      return {
-        status: true,
-        code: httpStatus.OK,
-        message: constant.strings.response.success.get,
-        result
-      };
+      return result
     } catch (err) {
       if (transaction) await transaction.rollback();
-      return {
-        status: false,
-        code: httpStatus.BAD_REQUEST,
-        message: err.message,
-        error: err
-      };
+      return err
+    }
+  },
+  getAll: async () => {
+    let transaction;
+    try {
+      transaction = await models.sequelize.transaction();
+      let result= await models.User.findAll()
+      console.log(result)
+      await transaction.commit();
+      return result
+    } catch (err) {
+      if (transaction) await transaction.rollback();
+      return err
+    }
+  },
+  createUser: async (req) => {
+    let transaction;
+    try {
+      transaction = await models.sequelize.transaction();
+     // let result= await models.User.getAll(req)
+
+   let data=  await models.User.create(req)
+      await transaction.commit();
+      return data
+    } catch (err) {
+      if (transaction) await transaction.rollback();
+      return err;
     }
   }
 
