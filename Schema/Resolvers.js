@@ -3,6 +3,11 @@ const _ = require("lodash")
 const libs = require("../libs")
 const jwt = require('jsonwebtoken');
 const models = require('../models')
+const {
+    ApolloError,
+  } = require('apollo-server');
+
+  
 
 const resolvers = {
     Query: {
@@ -49,10 +54,10 @@ const resolvers = {
             return newUser;
         },
         login: async (parent, args,token ) => {
-            let result = await libs.Auth.loginUser(args)    
-            console.log(result)
-            console.log(result.token)        
-            // console.log("token abc",token);
+            let result = await libs.Auth.loginUser(args)               
+            if(!result.status){
+                throw new ApolloError(result.message,result.code);
+        }
             return result.token
            
 
@@ -61,7 +66,7 @@ const resolvers = {
             let result = await libs.Auth.VerifyUser(args,token)    
           //  console.log("-----",token)        
             // console.log("token abc",token);
-            return result.token
+            return result.email
            
 
         }

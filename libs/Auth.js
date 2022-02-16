@@ -79,18 +79,17 @@ module.exports = {
   loginUser: async (req) => {
     let transaction
     try {
-    //   const jwtTOken=jwt.sign({
-    //     email:body.email
-    // }, HASH_SALT, {
-    //     expiresIn: '24h'
-    // })
+ 
       transaction = await models.sequelize.transaction();
       
       let user = await models.User.byEmail(req.email);
-      
-
-console.log(user)
-
+      if(!user){
+        return {
+          status: false,
+          code: httpStatus.BAD_REQUEST,
+          message: "User Not Found",
+        };
+      }
       const token = await JWT.generateToken(user);
       await transaction.commit();
       return {
@@ -132,13 +131,13 @@ console.log("Verification----nmmm",VNtoken)
 
 // const Vtoken = await JWT.verifyToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhbXJhbkBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2NDM4MTY5MzYsImV4cCI6MTY0MzkwMzMzNn0.ndSca6NDchPh56PwTfNd9TtBmgOHQJZWKnQmxdSGXJ4");
 // console.log("Verification----",Vtoken)
-      const token = await JWT.generateToken(user);
+      const email = VNtoken.email
       await transaction.commit();
       return {
         status: true,
         code: httpStatus.OK,
         message: constant.strings.response.success.login,
-        token
+        email
       };
 
     } catch (err) {

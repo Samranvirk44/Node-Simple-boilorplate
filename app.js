@@ -6,6 +6,7 @@ const cors = require('cors');
 const http = require('http');
 const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
+const { JWT } = require('./utils/index');
 
 // Express object
 const app = express();
@@ -40,7 +41,7 @@ const app = express();
 
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs } = require("./Schema/TypeDefs")
-const { resolvers } = require("./Schema/Resolvers")
+const { resolvers } = require("./Schema/Resolvers");
 
 // app.use(
 //     expressJwt({
@@ -50,21 +51,53 @@ const { resolvers } = require("./Schema/Resolvers")
 //     })
 // )
 const HASH_SALT = 'ABCD';
+const loggingMiddleware = (token,next) => {
+    console.log("-------------------",token)
+    console.log('ip:--------------------------');
+
+
+    let tokenNew = token.slice(7,token.length);
+
+    //console.log("after split--",tokenNew)
+    JWT.verifyToken(tokenNew)
+    .then((user)=>{
+        console.log("then-----",user)
+        return true
+    })
+    .catch((err)=>{
+        console.log('error----',err)
+        return false
+    })
+    
+
+  }
+  
 
 async function startApolloServer(typeDefs, resolvers) {
+
     const server = new ApolloServer({
         typeDefs, 
         resolvers, 
-        context: ({req}) => {
+        context: async ({req}) => {
          const token=req.headers.authorization;
+     //let validity=await loggingMiddleware(token)
+        console.log('----------------intp setver')
          return {
              token
          };
-        }
+        },
+        formatError: (err) => {
+            // Don't give the specific errors to the client.
+            if (err.message.startsWith('Database Error: ')) {
+              return new Error('Internal server error');
+            }
+            // Otherwise return the original error. The error can also
+            // be manipulated in other ways, as long as it's returned.
+            return err;
+          },
     })
     await server.start();
     server.applyMiddleware({ app });
-
     let PORT = 8080
     app.listen(PORT, () => {
         console.log(`Server is listening on port ${PORT}`);
